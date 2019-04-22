@@ -1,8 +1,16 @@
-<?php  
+<?php
+
+/*  
+ *	Branxe @2019
+ *  by Piotr Szewczyk
+ *	
+ *	Branxe kfskdjf 
+ */
 
 class Actions {
 
 	public function insertValue($data) {
+
 		foreach ($data as $value) {
 			if($value["type"]=="id") {
 				echo 'document.getElementById("' . $value["id"] . '").value = "' . $value["value"] . '";';
@@ -14,6 +22,7 @@ class Actions {
 	}
 
 	public function click($data) {
+
 		foreach ($data as $value) {
 			if($value["type"]=="id") {
 				echo 'document.getElementById("' . $value["id"] . '").click();';
@@ -25,6 +34,7 @@ class Actions {
 	}
 
 	public function check($data) {
+		
 		foreach ($data as $value) {
 			if($value["type"]=="id") {
 				echo 'document.getElementById("' . $value["id"] . '").checked = ' . $value['value'] . ';';
@@ -75,8 +85,5 @@ $actions->check(
 		)
 	)
 );
-
-
-
 
 ?>
