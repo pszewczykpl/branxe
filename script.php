@@ -7,11 +7,9 @@
  *	Branxe kfskdjf 
  */
 
-class Actions {
+class FormActions {
 
-	public function insertValue($data) {
-
-		$script = "";
+	public function insertValue($data, $script = null) {
 
 		foreach ($data as $value) {
 			if($value["type"]=="id") {
@@ -25,9 +23,7 @@ class Actions {
 		return $script;
 	}
 
-	public function click($data) {
-
-		$script = "";
+	public function click($data, $script = null) {
 
 		foreach ($data as $value) {
 			if($value["type"]=="id") {
@@ -41,9 +37,7 @@ class Actions {
 		return $script;
 	}
 
-	public function check($data) {
-
-		$script = "";
+	public function check($data, $script = null) {
 
 		foreach ($data as $value) {
 			if($value["type"]=="id") {
@@ -58,7 +52,7 @@ class Actions {
 	}
 }
 
-$actions = new Actions();
+$actions = new FormActions();
 
 echo $actions->insertValue(
 	array(
