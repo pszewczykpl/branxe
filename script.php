@@ -11,44 +11,56 @@ class Actions {
 
 	public function insertValue($data) {
 
+		$script = "";
+
 		foreach ($data as $value) {
 			if($value["type"]=="id") {
-				echo 'document.getElementById("' . $value["id"] . '").value = "' . $value["value"] . '";';
+				$script .= 'document.getElementById("' . $value["id"] . '").value = "' . $value["value"] . '";';
 			}
 			else if($value["type"]=="name") {
-				echo 'document.getElementByName("' . $value["name"] . '").value = "' . $value["value"] . '";';
+				$script .= 'document.getElementByName("' . $value["name"] . '").value = "' . $value["value"] . '";';
 			}
 		}
+
+		return $script;
 	}
 
 	public function click($data) {
 
+		$script = "";
+
 		foreach ($data as $value) {
 			if($value["type"]=="id") {
-				echo 'document.getElementById("' . $value["id"] . '").click();';
+				$script .= 'document.getElementById("' . $value["id"] . '").click();';
 			}
 			else if($value["type"]=="name") {
-				echo 'document.getElementByName("' . $value["name"] . '").click();';
+				$script .= 'document.getElementByName("' . $value["name"] . '").click();';
 			}
 		}
+
+		return $script;
 	}
 
 	public function check($data) {
-		
+
+		$script = "";
+
 		foreach ($data as $value) {
 			if($value["type"]=="id") {
-				echo 'document.getElementById("' . $value["id"] . '").checked = ' . $value['value'] . ';';
+				$script .= 'document.getElementById("' . $value["id"] . '").checked = ' . $value['value'] . ';';
 			}
 			else if($value["type"]=="name") {
-				echo 'document.getElementByName("' . $value["name"] . '").checked = ' . $value['value'] . ';';
+				$script .= 'document.getElementByName("' . $value["name"] . '").checked = ' . $value['value'] . ';';
 			}
 		}
+
+		return $script;
 	}
 }
 
 $actions = new Actions();
 
-$actions->insertValue(
+echo $actions->insertValue(
 	array(
 		array(
 			"type" => "id",
@@ -65,7 +77,7 @@ $actions->insertValue(
 	)
 );
 
-$actions->click(
+echo $actions->click(
 	array(
 		array(
 			"type" => "id",
@@ -75,7 +87,7 @@ $actions->click(
 	)
 );
 
-$actions->check(
+echo $actions->check(
 	array(
 		array(
 			"type" => "id",
