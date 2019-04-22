@@ -1,32 +1,82 @@
 <?php  
 
-class Insert {
+class Actions {
 
-	public function value($data) {
+	public function insertValue($data) {
 		foreach ($data as $value) {
 			if($value["type"]=="id") {
 				echo 'document.getElementById("' . $value["id"] . '").value = "' . $value["value"] . '";';
 			}
 			else if($value["type"]=="name") {
-				echo 'document.getElementById("' . $value["id"] . '").value = "' . $value["value"] . '";';
+				echo 'document.getElementByName("' . $value["name"] . '").value = "' . $value["value"] . '";';
+			}
+		}
+	}
+
+	public function click($data) {
+		foreach ($data as $value) {
+			if($value["type"]=="id") {
+				echo 'document.getElementById("' . $value["id"] . '").click();';
+			}
+			else if($value["type"]=="name") {
+				echo 'document.getElementByName("' . $value["name"] . '").click();';
+			}
+		}
+	}
+
+	public function check($data) {
+		foreach ($data as $value) {
+			if($value["type"]=="id") {
+				echo 'document.getElementById("' . $value["id"] . '").checked = ' . $value['value'] . ';';
+			}
+			else if($value["type"]=="name") {
+				echo 'document.getElementByName("' . $value["name"] . '").checked = ' . $value['value'] . ';';
 			}
 		}
 	}
 }
 
-$byID = new Insert();
+$actions = new Actions();
 
-$byID->value(array(
+$actions->insertValue(
 	array(
-		"id" => "test",
-		"value" => "COŚ",
-		"type" => "id"
-	),
-	array(
-		"id" => "test2",
-		"value" => "COŚ2",
-		"type" => "id"
+		array(
+			"type" => "id",
+			"id" => "test",
+			"value" => "COŚ",
+			"change" => true
+		),
+		array(
+			"type" => "id",
+			"id" => "test2",
+			"value" => "COŚ2",
+			"change" => true
+		)
 	)
-));
+);
+
+$actions->click(
+	array(
+		array(
+			"type" => "id",
+			"id" => "test3",
+			"change" => true
+		)
+	)
+);
+
+$actions->check(
+	array(
+		array(
+			"type" => "id",
+			"id" => "test4",
+			"value" => "true",
+			"change" => true
+		)
+	)
+);
+
+
+
 
 ?>
