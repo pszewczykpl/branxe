@@ -1,95 +1,172 @@
 <?php
 
 /*  
- *	Branxe @2019
+ *  Branxe @2019
  *  by Piotr Szewczyk
- *	
- *	Branxe kfskdjf 
+ *  
+ *  Branxe kfskdjf 
  */
+require_once('jquery-3.4.0.min.js.php');
 
-class FormActions {
+class Identity {
 
-	public function insertValue($data, $script = null) {
-
-		foreach ($data as $value) {
-			if($value["type"]=="id") {
-				$script .= 'document.getElementById("' . $value["id"] . '").value = "' . $value["value"] . '";';
-			}
-			else if($value["type"]=="name") {
-				$script .= 'document.getElementByName("' . $value["name"] . '").value = "' . $value["value"] . '";';
-			}
-		}
-
-		return $script;
-	}
-
-	public function click($data, $script = null) {
-
-		foreach ($data as $value) {
-			if($value["type"]=="id") {
-				$script .= 'document.getElementById("' . $value["id"] . '").click();';
-			}
-			else if($value["type"]=="name") {
-				$script .= 'document.getElementByName("' . $value["name"] . '").click();';
-			}
-		}
-
-		return $script;
-	}
-
-	public function check($data, $script = null) {
-
-		foreach ($data as $value) {
-			if($value["type"]=="id") {
-				$script .= 'document.getElementById("' . $value["id"] . '").checked = ' . $value['value'] . ';';
-			}
-			else if($value["type"]=="name") {
-				$script .= 'document.getElementByName("' . $value["name"] . '").checked = ' . $value['value'] . ';';
-			}
-		}
-
-		return $script;
-	}
 }
 
-$actions = new FormActions();
+class Actions {
 
-echo $actions->insertValue(
-	array(
-		array(
-			"type" => "id",
-			"id" => "test",
-			"value" => "COŚ",
-			"change" => true
-		),
-		array(
-			"type" => "id",
-			"id" => "test2",
-			"value" => "COŚ2",
-			"change" => true
-		)
-	)
-);
+    private $script = '';
 
-echo $actions->click(
-	array(
-		array(
-			"type" => "id",
-			"id" => "test3",
-			"change" => true
-		)
-	)
-);
+    /*
+     * Insert data to the form 
+     * 
+     * @since    0.0.1
+     *
+     * @param    array    $data['selector']     Name of jQuery selector
+     * @param    array    $data['method']       Name of jQuery method (Available methods: val, click, prop, change)
+     * @param    array    $data['property']     Only use in property jQuery method
+     * @param    array    $data['value']        Value in jQuery methods
+     *
+     * @return   string                         Script completing the form in JavaScript
+     */
+    public function insert($data) {
 
-echo $actions->check(
-	array(
-		array(
-			"type" => "id",
-			"id" => "test4",
-			"value" => "true",
-			"change" => true
-		)
-	)
-);
+        foreach ($data as $action) {
+            $this->script .= $this->addSelector($action['selector']);
+
+            switch($action['method']) {
+                case 'value':
+                    $this->script .= $this->valueMethod($action['value']);
+                    break;
+                case 'click':
+                    $this->script .= $this->clickMethod();
+                    break;
+                case 'property':
+                    $this->script .= $this->propertyMethod($action['property'], $action['value']);
+                    break;
+                case 'change':
+                    $this->script .= $this->changeMethod();
+                    break;
+            }
+        }
+    }
+
+    /*
+     * Show complete JavaScript script
+     * 
+     * @since    0.0.1
+     */
+    public function returnScript() {
+
+        return $this->script;
+    }
+
+    /*
+     * Show complete JavaScript script
+     * 
+     * @since    0.0.1
+     */
+    public function renderScript() {
+
+        echo $this->returnScript();
+    }
+
+    /*
+     * Add selector in jQuery method
+     * 
+     * @since    0.0.1
+     *
+     * @param    string   $selector             Name of jQuery selector
+     *
+     * @return   string                         Selector in jQuery method
+     */
+    private function addSelector($selector) {
+
+        return '$("' . $selector . '").';
+    }
+
+    /*
+     * Add CSS style in jQuery method
+     * 
+     * @since    0.0.1
+     *
+     * @param    string   $propertyname         Propertyname of CSS style
+     * @param    string   $value                Value of CSS style
+     *
+     * @return   string                         CSS style in jQuery method
+     */
+    private function addStyle($propertyname, $value) {
+
+        return 'css("' . $propertyname . '", "' . $value . '");';
+    }
+
+    /*
+     * Add jQuery method named val
+     * 
+     * @since    0.0.1
+     *
+     * @param    string   $value                Value in jQuery method
+     *
+     * @return   string                         jQuery method named val
+     */
+    private function valueMethod($value) {
+
+        return 'val("' . $value . '");';
+    }
+
+    /*
+     * Add jQuery method named click
+     * 
+     * @since    0.0.1
+     *
+     * @return   string                         jQuery method named click
+     */
+    private function clickMethod() {
+
+        return 'click();';
+    }
+
+    /*
+     * Add jQuery method named prop
+     * 
+     * @since    0.0.1
+     *
+     * @param    string   $property             Property in jQuery method
+     * @param    string   $value                Value in jQuery method
+     *
+     * @return   string                         jQuery method named prop
+     */
+    private function propertyMethod($property, $value) {
+
+        return 'prop("' . $property . '", ' . $value . ');';
+    }
+
+    /*
+     * Add jQuery method named change
+     * 
+     * @since    0.0.1
+     *
+     * @return   string                         jQuery method named change
+     */
+    private function changeMethod() {
+
+        return 'change();';
+    }
+}
+
+$actions = new Actions();
+
+/*
+ * WNIOSEK: PRODUKT INWESTYCYJNY
+ */
+$actions->insert(array(
+
+    array('selector' => '#test', 'method' => 'value', 'value' => 'Testowy napis'),
+    array('selector' => '#test2', 'method' => 'value', 'value' => 'Drugi testowy napis'),
+    array('selector' => '#test3', 'method' => 'click'),
+    array('selector' => '#test4', 'method' => 'property', 'property' => 'checked', 'value' => true)
+
+));
+
+$actions->renderScript();
 
 ?>
