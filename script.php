@@ -12,6 +12,18 @@ class Identity {
 
     private $birthdayDate;
 
+    /*
+     * Insert data to the form
+     * 
+     * @since    0.0.1
+     *
+     * @param    array    $data['selector']     Name of jQuery selector
+     * @param    array    $data['method']       Name of jQuery method (Available methods: val, click, prop, change)
+     * @param    array    $data['property']     Only use in property jQuery method
+     * @param    array    $data['value']        Value in jQuery methods
+     *
+     * @return   string                         Script completing the form in JavaScript
+     */
     public function randomDate($startDate = '1901-01-01', $endDate = null, $format = 'Y-m-d') {
 
         if($endDate == null) { 
