@@ -10,6 +10,22 @@ require_once('jquery-3.4.0.min.js.php');
 
 class Identity {
 
+    private $birthdayDate;
+
+    public function randomDate($startDate = '1901-01-01', $endDate = null, $format = 'Y-m-d') {
+
+        if($endDate == null) { 
+            $endDate = date('Y-m-d'); 
+        }
+
+        $min = strtotime($startDate);
+        $max = strtotime($endDate);
+
+        $date = mt_rand($min, $max);
+
+        return date($format, $date);
+    }
+
 }
 
 class Actions {
@@ -17,7 +33,7 @@ class Actions {
     private $script = '';
 
     /*
-     * Insert data to the form 
+     * Insert data to the form
      * 
      * @since    0.0.1
      *
@@ -154,13 +170,14 @@ class Actions {
 }
 
 $actions = new Actions();
+$identity = new Identity();
 
 /*
  * WNIOSEK: PRODUKT INWESTYCYJNY
  */
 $actions->insert(array(
 
-    array('selector' => '#test', 'method' => 'value', 'value' => 'Testowy napis'),
+    array('selector' => '#test', 'method' => 'value', 'value' => $date),
     array('selector' => '#test2', 'method' => 'value', 'value' => 'Drugi testowy napis'),
     array('selector' => '#test3', 'method' => 'click'),
     array('selector' => '#test4', 'method' => 'property', 'property' => 'checked', 'value' => true)
