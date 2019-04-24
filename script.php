@@ -10,39 +10,141 @@ require_once('jquery-3.4.0.min.js.php');
 
 class Identity {
 
-    private $birthdayDate;
+    private $_birthdayDate;
+    private $_sex;
+    private $_pesel;
 
-    /*
-     * Insert data to the form
-     * 
-     * @since    0.0.1
-     *
-     * @param    array    $data['selector']     Name of jQuery selector
-     * @param    array    $data['method']       Name of jQuery method (Available methods: val, click, prop, change)
-     * @param    array    $data['property']     Only use in property jQuery method
-     * @param    array    $data['value']        Value in jQuery methods
-     *
-     * @return   string                         Script completing the form in JavaScript
-     */
-    public function randomDate($startDate = '1901-01-01', $endDate = null, $format = 'Y-m-d') {
-
-        if($endDate == null) { 
-            $endDate = date('Y-m-d'); 
-        }
-
-        $min = strtotime($startDate);
-        $max = strtotime($endDate);
-
-        $date = mt_rand($min, $max);
-
-        return date($format, $date);
+    public function __construct() {
+        $this->generatePesel();
     }
 
+    /*
+     * Return the set birthday date
+     * 
+     * @since    0.0.1
+     */
+    public function getBirthdayDate() {
+
+        return $this->_birthdayDate;
+    }
+
+    /*
+     * Return the set sex
+     * 
+     * @since    0.0.1
+     */
+    public function getSex() {
+
+        return $this->_sex;
+    }
+
+    /*
+     * Return sex
+     * 
+     * @since    0.0.1
+     */
+    private function generateSex() {
+
+        switch($this->randomNumber()) {
+            case 0:
+                return 'man';
+                break;
+            case 1:
+                return 'woman';
+                break;
+        }
+    }
+
+    /*
+     * Return the set pesel
+     * 
+     * @since    0.0.1
+     */
+    public function getPesel() {
+
+        return $this->_pesel;
+    }
+
+    /*
+     * Return pesel
+     * 
+     * @since    0.0.1
+     */
+    private function generatePesel($birthdayDate = null, $sex = null) {
+
+        if(!$birthdayDate) {
+            $birthdayDate = $this->randomDate();
+        }
+        if(!$sex) {
+            $sex = $this->generateSex();
+        }
+
+        $year = date('y', strtotime($birthdayDate));
+        $fullYear = date('Y', strtotime($birthdayDate));
+        $month = date('m', strtotime($birthdayDate));
+        $day = date('d', strtotime($birthdayDate));
+
+        if($fullYear >= 1800 && $fullYear <= 1899) {
+            $month += 80;
+        }
+        else if($fullYear >= 2000 && $fullYear <= 2099) {
+            $month += 20;
+        }
+        else if($fullYear >= 2100 && $fullYear <= 2199) {
+            $month += 40;
+        }
+        else if($fullYear >= 2200 && $fullYear <= 2299) {
+            $month += 60;
+        }
+
+        $even = [0, 2, 4, 6, 8];
+
+        $this->_pesel = $year;
+        $this->_pesel .= $month;
+        $this->_pesel .= $day;
+        $this->_pesel .= $this->randomNumber(0,9);
+        $this->_pesel .= $this->randomNumber(0,9);
+        $this->_pesel .= $this->randomNumber(0,9);
+        
+        if($sex == 'woman') {
+            $this->_pesel .= $even[$this->randomNumber(0,4)];
+        }
+        else {
+            $this->_pesel .= $even[$this->randomNumber(0,4)]+1;
+        }
+    }
+
+    /*
+     * Return random date
+     * 
+     * @since    0.0.1
+     */
+    private function randomDate($start = null, $end = null, $format = 'Y-m-d') {
+
+        if(!$start) {
+            $start = '1901-01-01';
+        }
+        if(!$end) {
+            $end = date('Y-m-d');
+        }
+
+        return date($format, mt_rand(strtotime($start), strtotime($end)));
+    }
+
+    /*
+     * Return random number
+     * 
+     * @since    0.0.1
+     */
+    private function randomNumber($min = 0, $max = 1) {
+
+        return rand($min, $max);
+    }
 }
 
 class Actions {
 
-    private $script = '';
+    private $_script = '';
 
     /*
      * Insert data to the form
@@ -59,33 +161,33 @@ class Actions {
     public function insert($data) {
 
         foreach ($data as $action) {
-            $this->script .= $this->addSelector($action['selector']);
+            $this->_script .= $this->addSelector($action['selector']);
 
             switch($action['method']) {
                 case 'value':
-                    $this->script .= $this->valueMethod($action['value']);
+                    $this->_script .= $this->valueMethod($action['value']);
                     break;
                 case 'click':
-                    $this->script .= $this->clickMethod();
+                    $this->_script .= $this->clickMethod();
                     break;
                 case 'property':
-                    $this->script .= $this->propertyMethod($action['property'], $action['value']);
+                    $this->_script .= $this->propertyMethod($action['property'], $action['value']);
                     break;
                 case 'change':
-                    $this->script .= $this->changeMethod();
+                    $this->_script .= $this->changeMethod();
                     break;
             }
         }
     }
 
     /*
-     * Show complete JavaScript script
+     * Return complete JavaScript script
      * 
      * @since    0.0.1
      */
-    public function returnScript() {
+    public function getScript() {
 
-        return $this->script;
+        return $this->_script;
     }
 
     /*
@@ -95,7 +197,7 @@ class Actions {
      */
     public function renderScript() {
 
-        echo $this->returnScript();
+        echo $this->getScript();
     }
 
     /*
@@ -189,7 +291,7 @@ $identity = new Identity();
  */
 $actions->insert(array(
 
-    array('selector' => '#test', 'method' => 'value', 'value' => $date),
+    array('selector' => '#test', 'method' => 'value', 'value' => $identity->getPesel()),
     array('selector' => '#test2', 'method' => 'value', 'value' => 'Drugi testowy napis'),
     array('selector' => '#test3', 'method' => 'click'),
     array('selector' => '#test4', 'method' => 'property', 'property' => 'checked', 'value' => true)
