@@ -11,14 +11,37 @@ require_once('database.php');
 
 class Identity {
 
-	private $_birthdayDate;
-    private $_sex;
-    private $_pesel;
-    private $_idCardType;
-    private $_idCardNumber;	
-    private $_name;
-    private $_secondName;
+	/* Imię */
+	private $_name;
+	/* Drugie imię */
+	private $_secondName;
+	/* Nazwisko */
     private $_surname;
+    /* Data urodzenia */
+	private $_birthdayDate;
+	/* Obywatelstwo */
+	private $_citizenship;
+	/* Płeć */
+    private $_sex;
+    /* PESEL */
+    private $_pesel;
+    /* Rodzaj dokumentu tożsamości (dowód osobisty) */
+    private $_idCardType = 1;
+    /* Nazwa rodzaju dokumentu tożsamości (dowód osobisty) */
+    private $_idCardTypeName;
+    /* Numer dokumentu tożsamości (dowód osobisty) */
+    private $_idCardNumber;
+    /* Rodzaj dokumentu tożsamości (paszport) */
+    private $_passportCardType = 2;
+    /* Nazwa rodzaju dokumentu tożsamości (paszport) */
+    private $_passportCardTypeName;
+    /* Numer dokumentu tożsamości (paszport) */
+    private $_passportCardNumber;
+    /* Nazwa urzędu skarbowego (dla Polski) */
+    private $_taxOfficeNamePL;
+    /* Numer rachunku bankowego */
+    private $_bankAccountNumber;
+    
 
     public function __construct() {
 
@@ -29,9 +52,12 @@ class Identity {
         $this->generatePesel();
         $this->generateNames($database);
         $this->generateSurname($database);
-        $this->generateIdCard($database);
-
-    
+        $this->generatePassportCardTypeName($database);
+        $this->generatePassportCardNumber();
+        $this->generateIdCardTypeName($database);
+        $this->generateIdCardNumber();    
+        $this->generateTaxOfficeName($database);
+        $this->generateBankAccountNumber();
     
     }
 
@@ -157,7 +183,27 @@ class Identity {
     }
 
     /*
-     * Return the set ID card/passport number
+     * Return the set tax office name
+     * 
+     * @since    0.0.1
+     */
+    public function getTaxOfficeName() {
+
+        return $this->_taxOfficeNamePL;
+    }
+
+    /*
+     * Generate tax office name and set $this->_taxOfficeNamePL;
+     * 
+     * @since    0.0.1
+     */
+    private function generateTaxOfficeName($data) {
+
+    	$this->_taxOfficeNamePL = $data['tax_offices_PL'][$this->randomNumber(0, $this->lengthArray($data['tax_offices_PL']))];
+    }
+
+    /*
+     * Return the set ID card number
      * 
      * @since    0.0.1
      */
@@ -177,22 +223,23 @@ class Identity {
     }
 
     /*
-     * Return the set ID card type and ID card/passport number
+     * Return the set name of ID card type
      * 
      * @since    0.0.1
      */
-    public function generateIdCard($data) {
+    public function getIdCardTypeName() {
 
-        switch($this->randomNumber()) {
-        	case 0:
-        		$this->_idCardType = 1;
-        		$this->generateIdCardNumber();
-        		break;
-        	case 1:
-        		$this->_idCardType = 2;
-        		$this->generatePassportNumber();
-        		break;
-        }
+        return $this->_idCardTypeName;
+    }
+
+    /*
+     * Generate ID card type name
+     * 
+     * @since    0.0.1
+     */
+    public function generateIdCardTypeName($data) {
+
+        $this->_idCardTypeName = $data['identification_card_type'][$this->_idCardType];
     }
 
     /*
@@ -221,11 +268,86 @@ class Identity {
     }
 
     /*
-     * Generate ID card number and set $this->_idCardNumber;
+     * Get bank account number
      * 
      * @since    0.0.1
      */
-    private function generatePassportNumber() {
+    public function getBankAccountNumber() {
+
+    	return $this->_bankAccountNumber;
+    }
+
+    /*
+     * Generate bank account number and set $this->_bankAccountNumber;
+     * 
+     * @since    0.0.1
+     */
+    private function generateBankAccountNumber() {
+
+    	$values = array( 0 => 0, 1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 8 => 8, 9 => 9, 'A' => 10, 'B' => 11, 'C' => 12, 'D' => 13, 'E' => 14, 'F' => 15, 'G' => 16, 'H' => 17, 'I' => 18, 'J' => 19, 'K' => 20, 'L' => 21, 'M' => 22, 'N' => 23, 'O' => 24, 'P' => 25, 'Q' => 26, 'R' => 27, 'S' => 28, 'T' => 29, 'U' => 30, 'V' => 31, 'W' => 32, 'X' => 33, 'Y' => 34, 'Z' => 35);
+
+    	for($i = 0; $i<=10; $i++) {
+
+    		$number = "";
+    		$mod = 1;
+
+    		while($mod != 0) {
+    			$number = $this->randomNumber(0,9,2);
+	    		$mod = $number % 97;
+	    	}
+	    	$this->_bankAccountNumber .= $number;
+    	}
+
+    	$number1 = "";
+    	$mod1 = 1;
+    }
+
+    /*
+     * Return the set passport card number
+     * 
+     * @since    0.0.1
+     */
+    public function getPassportCardNumber() {
+
+        return $this->_passportCardNumber;
+    }
+
+    /*
+     * Return the set passport card type
+     * 
+     * @since    0.0.1
+     */
+    public function getPassportCardType() {
+
+        return $this->_passportCardType;
+    }
+
+    /*
+     * Return the set name of passport card type
+     * 
+     * @since    0.0.1
+     */
+    public function getPassportCardTypeName() {
+
+        return $this->_passportCardTypeName;
+    }
+
+    /*
+     * Generate passport card type name
+     * 
+     * @since    0.0.1
+     */
+    public function generatePassportCardTypeName($data) {
+
+        $this->_passportCardTypeName = $data['identification_card_type'][$this->_passportCardType];
+    }
+
+    /*
+     * Generate passport card number and set $this->_passportCardNumber;
+     * 
+     * @since    0.0.1
+     */
+    private function generatePassportCardNumber() {
 
     	$values = array( 0 => 0, 1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 8 => 8, 9 => 9, 'A' => 10, 'B' => 11, 'C' => 12, 'D' => 13, 'E' => 14, 'F' => 15, 'G' => 16, 'H' => 17, 'I' => 18, 'J' => 19, 'K' => 20, 'L' => 21, 'M' => 22, 'N' => 23, 'O' => 24, 'P' => 25, 'Q' => 26, 'R' => 27, 'S' => 28, 'T' => 29, 'U' => 30, 'V' => 31, 'W' => 32, 'X' => 33, 'Y' => 34, 'Z' => 35);
     	$weights = [7, 3, 1, 7, 3, 1, 7, 3];
@@ -240,9 +362,9 @@ class Identity {
     	}
     	$control_sum %= 10;
 
-    	$this->_idCardNumber  = $series;
-    	$this->_idCardNumber .= $control_sum;
-    	$this->_idCardNumber .= $number;
+    	$this->_passportCardNumber  = $series;
+    	$this->_passportCardNumber .= $control_sum;
+    	$this->_passportCardNumber .= $number;
     }
 
     /*
@@ -270,15 +392,10 @@ class Identity {
         $month = date('m', strtotime($this->_birthdayDate));
         $day = date('d', strtotime($this->_birthdayDate));
 
-        if($fullYear >= 1800 && $fullYear <= 1899) {
-            $month += 80;
-        } else if($fullYear >= 2000 && $fullYear <= 2099) {
-            $month += 20;
-        } else if($fullYear >= 2100 && $fullYear <= 2199) {
-            $month += 40;
-        } else if($fullYear >= 2200 && $fullYear <= 2299) {
-            $month += 60;
-        }
+        if($fullYear >= 1800 && $fullYear <= 1899) 		$month += 80;
+        else if($fullYear >= 2000 && $fullYear <= 2099) $month += 20;
+        else if($fullYear >= 2100 && $fullYear <= 2199) $month += 40;
+        else if($fullYear >= 2200 && $fullYear <= 2299) $month += 60;
 
         $this->_pesel = $year . $month . $day . $this->randomNumber(0,9,3);
         
@@ -502,6 +619,8 @@ class Actions {
 $actions = new Actions();
 $identity = new Identity();
 
+
+
 /*
  * WNIOSEK: PRODUKT INWESTYCYJNY
  */
@@ -537,8 +656,38 @@ $actions->insert(array(
     array('selector' => '#data_urodzenia_uc', 'method' => 'value', 'value' => $identity->getBirthdayDate()),
     array('selector' => '#rodzaj_dok_pol_uc', 'method' => 'value', 'value' => $identity->getIdCardType()),
     array('selector' => '#nr_dok_tozsamosci_uc', 'method' => 'value', 'value' => $identity->getIdCardNumber()),
+    array('selector' => '#urzad_skarbowy_slownik_uc', 'method' => 'value', 'value' => $identity->getTaxOfficeName()),
+    array('selector' => '#nr_rachunku_ubez_uc', 'method' => 'value', 'value' => $identity->getBankAccountNumber()),
     array('selector' => '#test3', 'method' => 'click'),
     array('selector' => '#test4', 'method' => 'property', 'property' => 'checked', 'value' => true)
+
+));
+
+$identity = new Identity();
+	
+/*
+ * WNIOSEK: PRODUKT INWESTYCYJNY
+ */
+$actions->insert(array(
+
+	array('selector' => '#odbiorca_imie_os_trzecia', 'method' => 'value', 'value' => $identity->getName()),
+	array('selector' => '#odbiorca_nazwisko_os_trzecia', 'method' => 'value', 'value' => $identity->getSurname()),
+    array('selector' => '#adres_ulica_os_trzecia', 'method' => 'value', 'value' => "Ulica"),
+    array('selector' => '#adres_nr_domu_os_trzecia', 'method' => 'value', 'value' => "1"),
+    array('selector' => '#adres_nr_lokalu_os_trzecia', 'method' => 'value', 'value' => "1"),
+    array('selector' => '#adres_miejscowosc_os_trzecia', 'method' => 'value', 'value' => "Miejscowość"),
+    array('selector' => '#adres_kod_os_trzecia', 'method' => 'value', 'value' => "11-111"),
+    array('selector' => '#adres_poczta_os_trzecia', 'method' => 'value', 'value' => "Poczta"),
+    array('selector' => '#adres_kraj_os_trzecia', 'method' => 'value', 'value' => "PL"),
+    array('selector' => '#adres_k_ulica_os_trzecia', 'method' => 'value', 'value' => "Ulica"),
+    array('selector' => '#adres_k_nr_domu_os_trzecia', 'method' => 'value', 'value' => "1"),
+    array('selector' => '#adres_k_nr_lokalu_os_trzecia', 'method' => 'value', 'value' => "1"),
+    array('selector' => '#adres_k_miejscowosc_os_trzecia', 'method' => 'value', 'value' => "Miejscowość"),
+    array('selector' => '#adres_k_kod_os_trzecia', 'method' => 'value', 'value' => "11-111"),
+    array('selector' => '#adres_k_poczta_os_trzecia', 'method' => 'value', 'value' => "Poczta"),
+    array('selector' => '#adres_k_kraj_os_trzecia', 'method' => 'value', 'value' => "PL"),
+    array('selector' => '#nr_rachunku_os_trzecia', 'method' => 'value', 'value' => "26249000056450941321968339")
+
 
 ));
 
