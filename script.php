@@ -1,4 +1,24 @@
+document.body.onkeyup=function(e){if(e.keyCode == 192){$("#button_next").click();$("#finish").click();$("#s3").click();$("#s2").click();}}
+
+if ($("#rodzaj_deklaracji").length) { 
+$('#rodzaj_deklaracji').append(new Option('PELNA', 'PELNA'));
+}
 <?php
+ ob_start();
+
+function setCookies($name, $value, $sec) {
+
+    setcookie($name, $value, time()+$sec);
+    return true;
+}
+
+function getCookies($name) {
+
+    if(isset($_COOKIE[$name])) {
+        return $_COOKIE[$name];
+    }
+    return false;
+}
 
 /*  
  *  Branxe @2019
@@ -6,8 +26,10 @@
  *  
  *  Branxe kfskdjf 
  */
-require_once('jquery-3.4.0.min.js.php');
-require_once('database.php');
+
+
+require('Database.php');
+
 
 class Identity {
 
@@ -39,13 +61,10 @@ class Identity {
     private $_passportCardNumber;
     /* Nazwa urzędu skarbowego (dla Polski) */
     private $_taxOfficeNamePL;
-    /* Numer rachunku bankowego */
-    private $_bankAccountNumber;
     
-
     public function __construct() {
 
-    	global $database;
+        global $database;
 
     	$this->generateBirthdayDate();
     	$this->generateSex();
@@ -57,7 +76,6 @@ class Identity {
         $this->generateIdCardTypeName($database);
         $this->generateIdCardNumber();    
         $this->generateTaxOfficeName($database);
-        $this->generateBankAccountNumber();
     
     }
 
@@ -100,10 +118,10 @@ class Identity {
 
         switch($this->randomNumber()) {
             case 0:
-                $this->_sex = 'man';
+                $this->_sex = 'M';
                 break;
             case 1:
-                $this->_sex = 'woman';
+                $this->_sex = 'K';
                 break;
         }
     }
@@ -136,14 +154,14 @@ class Identity {
     private function generateNames($data) {
 
     	switch($this->_sex) {
-    		case 'man':
+    		case 'M':
     			$this->_name = $data['male_names'][$this->randomNumber(0, $this->lengthArray($data['male_names']))];
     			$this->_secondName = $data['male_names'][$this->randomNumber(0, $this->lengthArray($data['male_names']))];
     			while($this->_name == $this->_secondName) {
     				$this->_secondName = $data['male_names'][$this->randomNumber(0, $this->lengthArray($data['male_names']))];
     			}
     			break;
-    		case 'woman':
+    		case 'K':
     			$this->_name = $data['famale_names'][$this->randomNumber(0, $this->lengthArray($data['famale_names']))];
     			$this->_secondName = $data['famale_names'][$this->randomNumber(0, $this->lengthArray($data['famale_names']))];
     			while($this->_name == $this->_secondName) {
@@ -172,10 +190,10 @@ class Identity {
     private function generateSurname($data) {
 
     	switch($this->_sex) {
-    		case 'man':
+    		case 'M':
     			$this->_surname = $data['male_surnames'][$this->randomNumber(0, $this->lengthArray($data['male_surnames']))];
     			break;
-    		case 'woman':
+    		case 'K':
     			$this->_surname = $data['famale_surnames'][$this->randomNumber(0, $this->lengthArray($data['famale_surnames']))];
     			break;
     	}
@@ -265,41 +283,6 @@ class Identity {
     	$this->_idCardNumber  = $series;
     	$this->_idCardNumber .= $control_sum;
     	$this->_idCardNumber .= $number;
-    }
-
-    /*
-     * Get bank account number
-     * 
-     * @since    0.0.1
-     */
-    public function getBankAccountNumber() {
-
-    	return $this->_bankAccountNumber;
-    }
-
-    /*
-     * Generate bank account number and set $this->_bankAccountNumber;
-     * 
-     * @since    0.0.1
-     */
-    private function generateBankAccountNumber() {
-
-    	$values = array( 0 => 0, 1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 8 => 8, 9 => 9, 'A' => 10, 'B' => 11, 'C' => 12, 'D' => 13, 'E' => 14, 'F' => 15, 'G' => 16, 'H' => 17, 'I' => 18, 'J' => 19, 'K' => 20, 'L' => 21, 'M' => 22, 'N' => 23, 'O' => 24, 'P' => 25, 'Q' => 26, 'R' => 27, 'S' => 28, 'T' => 29, 'U' => 30, 'V' => 31, 'W' => 32, 'X' => 33, 'Y' => 34, 'Z' => 35);
-
-    	for($i = 0; $i<=10; $i++) {
-
-    		$number = "";
-    		$mod = 1;
-
-    		while($mod != 0) {
-    			$number = $this->randomNumber(0,9,2);
-	    		$mod = $number % 97;
-	    	}
-	    	$this->_bankAccountNumber .= $number;
-    	}
-
-    	$number1 = "";
-    	$mod1 = 1;
     }
 
     /*
@@ -400,10 +383,10 @@ class Identity {
         $this->_pesel = $year . $month . $day . $this->randomNumber(0,9,3);
         
         switch($this->_sex) {
-        	case 'woman':
+        	case 'K':
         		$this->_pesel .= $even[$this->randomNumber(0,4)];
         		break;
-        	case 'man':
+        	case 'M':
         		$this->_pesel .= $even[$this->randomNumber(0,4)]+1;
         		break;
         }
@@ -420,7 +403,7 @@ class Identity {
      * 
      * @since    0.0.1
      */
-    private function randomDate($start = '1901-01-01', $end = '2003-01-01', $format = 'Y-m-d') {
+    private function randomDate($start = '1960-01-01', $end = '1996-01-01', $format = 'Y-m-d') {
 
         return date($format, mt_rand(strtotime($start), strtotime($end)));
     }
@@ -430,7 +413,7 @@ class Identity {
      * 
      * @since    0.0.1
      */
-    private function randomNumber($min = 0, $max = 1, $length = 1) {
+    public function randomNumber($min = 0, $max = 1, $length = 1) {
 
     	$number = "";
 
@@ -473,6 +456,13 @@ class Identity {
 
         return $lenght;
     }
+
+    public function randomArray($data) {
+
+        $lenght = $this->lengthArray($data);
+
+        return $data[$this->randomNumber(0, $lenght)];
+    }
 }
 
 class Actions {
@@ -494,20 +484,43 @@ class Actions {
     public function insert($data) {
 
         foreach ($data as $action) {
-            $this->_script .= $this->addSelector($action['selector']);
-
             switch($action['method']) {
                 case 'value':
+                    $this->_script .= $this->addSelector($action['selector']);
                     $this->_script .= $this->valueMethod($action['value']);
                     break;
                 case 'click':
+                    $this->_script .= $this->addSelector($action['selector']);
                     $this->_script .= $this->clickMethod();
                     break;
                 case 'property':
+                    $this->_script .= $this->addSelector($action['selector']);
                     $this->_script .= $this->propertyMethod($action['property'], $action['value']);
                     break;
                 case 'change':
+                    $this->_script .= $this->addSelector($action['selector']);
                     $this->_script .= $this->changeMethod();
+                    break;
+                case 'blur':
+                    $this->_script .= $this->addSelector($action['selector']);
+                    $this->_script .= $this->blurMethod();
+                    break;
+                case 'focus':
+                    $this->_script .= $this->addSelector($action['selector']);
+                    $this->_script .= $this->focusMethod();
+                    break;
+                case 'keyup':
+                    $this->_script .= $this->addSelector($action['selector']);
+                    $this->_script .= $this->keyupMethod();
+                    break;
+                case 'checked':
+                    $this->_script .= 'if ($("';
+                    $this->_script .= $action['selector'];
+                    $this->_script .= '").length) { $("';
+                    $this->_script .= $action['selector'];
+                    $this->_script .= '")[0].checked = "';
+                    $this->_script .= $action['value'];
+                    $this->_script .= '"; }';
                     break;
             }
         }
@@ -589,6 +602,18 @@ class Actions {
     }
 
     /*
+     * Add jQuery method named blur
+     * 
+     * @since    0.0.1
+     *
+     * @return   string                         jQuery method named blur
+     */
+    private function blurMethod() {
+
+        return 'blur();';
+    }
+
+    /*
      * Add jQuery method named prop
      * 
      * @since    0.0.1
@@ -600,7 +625,7 @@ class Actions {
      */
     private function propertyMethod($property, $value) {
 
-        return 'prop("' . $property . '", ' . $value . ');';
+        return 'if ($("' . $property . '").length) { prop("' . $property . '","' . $value . '"); }';
     }
 
     /*
@@ -614,22 +639,50 @@ class Actions {
 
         return 'change();';
     }
+
+    /*
+     * Add jQuery method named keyup
+     * 
+     * @since    0.0.1
+     *
+     * @return   string                         jQuery method named keyup
+     */
+    private function keyupMethod() {
+
+        return 'keyup();';
+    }
+
+    /*
+     * Add jQuery method named focus
+     * 
+     * @since    0.0.1
+     *
+     * @return   string                         jQuery method named focus
+     */
+    private function focusMethod() {
+
+        return 'focus();';
+    }
 }
 
 $actions = new Actions();
 $identity = new Identity();
+$identity2 = new Identity();
+$identity3 = new Identity();
+$identity4 = new Identity();
+$procentage = $identity3->randomArray($database['dane_procenty']);
 
 
 
 /*
- * WNIOSEK: PRODUKT INWESTYCYJNY
+ * Wniosek (Produkty Inwestycyjne + Ochronne)
  */
 $actions->insert(array(
 
 	/* Czy Ubezpieczający i Ubezpieczony to różne osoby? */
     array('selector' => '#notSamePerson0', 'method' => 'click'), /* TAK */
 
-    /* Czy została wypełniona Ankieta potrzeb klienta? (Ubezpieczony) */
+    /* Pytania dla Ubezpieczonego */
 	array('selector' => '#insuredPollFilled0', 'method' => 'click'), 
 	array('selector' => '#insuredPollFilled0', 'method' => 'change'), 
 	array('selector' => '#insuredPositiveRecommendation0', 'method' => 'click'), 
@@ -639,7 +692,7 @@ $actions->insert(array(
 	array('selector' => '#insuredPollUpToDate0', 'method' => 'click'), 
 	array('selector' => '#insuredPollUpToDate0', 'method' => 'change'), 
 
-	/* Czy została wypełniona Ankieta potrzeb klienta? (Ubezpieczający) */
+	/* Pytania dla Ubezpieczającego */
 	array('selector' => '#insurerPollFilled0', 'method' => 'click'), 
 	array('selector' => '#insurerPollFilled0', 'method' => 'change'), 
 	array('selector' => '#insurerPositiveRecommendation0', 'method' => 'click'), 
@@ -649,33 +702,254 @@ $actions->insert(array(
 	array('selector' => '#insurerPollUpToDate0', 'method' => 'click'),
 	array('selector' => '#insurerPollUpToDate0', 'method' => 'change'),
 
+    /* Dane dotyczące Ubezpieczającego */
 	array('selector' => '#imie_uc', 'method' => 'value', 'value' => $identity->getName()),
 	array('selector' => '#drugie_imie_uc', 'method' => 'value', 'value' => $identity->getSecondName()),
 	array('selector' => '#nazwisko_uc', 'method' => 'value', 'value' => $identity->getSurname()),
     array('selector' => '#pesel_uc', 'method' => 'value', 'value' => $identity->getPesel()),
     array('selector' => '#data_urodzenia_uc', 'method' => 'value', 'value' => $identity->getBirthdayDate()),
+    array('selector' => '#plec_uc', 'method' => 'value', 'value' => $identity->getSex()),
+    array('selector' => '#obywatelstwo_uc', 'method' => 'value', 'value' => 'PL'),
+    array('selector' => '#rodzaj_dok_inne_uc', 'method' => 'value', 'value' => $identity->getIdCardType()),
     array('selector' => '#rodzaj_dok_pol_uc', 'method' => 'value', 'value' => $identity->getIdCardType()),
     array('selector' => '#nr_dok_tozsamosci_uc', 'method' => 'value', 'value' => $identity->getIdCardNumber()),
     array('selector' => '#urzad_skarbowy_slownik_uc', 'method' => 'value', 'value' => $identity->getTaxOfficeName()),
-    array('selector' => '#nr_rachunku_ubez_uc', 'method' => 'value', 'value' => $identity->getBankAccountNumber()),
-    array('selector' => '#test3', 'method' => 'click'),
-    array('selector' => '#test4', 'method' => 'property', 'property' => 'checked', 'value' => true)
+    array('selector' => '#nr_rachunku_ubez_uc', 'method' => 'value', 'value' => $identity->randomArray($database['dane_nr_rachunku_bankowego'])),
+    array('selector' => '#nazwa_banku_uc', 'method' => 'value', 'value' => 'Getin Noble Bank S.A.'),
+    array('selector' => '#adres_z_ulica_uc', 'method' => 'value', 'value' => $identity->randomArray($database['dane_ulice'])),
+    array('selector' => '#adres_z_nr_domu_uc', 'method' => 'value', 'value' => $identity->randomNumber(0,120)),
+    array('selector' => '#adres_z_nr_lokalu_uc', 'method' => 'value', 'value' => $identity->randomNumber(0,120)),
+    array('selector' => '#adres_z_kod_uc', 'method' => 'value', 'value' => $identity->randomArray($database['dane_kod_pocztowy'])),
+    array('selector' => '#adres_z_poczta_uc', 'method' => 'value', 'value' => $identity->randomArray($database['dane_poczta'])),
+    array('selector' => '#adres_z_miejscowosc_uc', 'method' => 'value', 'value' => 'Warszawa'),
+    array('selector' => '#adres_k_ulica_uc', 'method' => 'value', 'value' => $identity->randomArray($database['dane_ulice'])),
+    array('selector' => '#adres_k_nr_domu_uc', 'method' => 'value', 'value' => $identity->randomNumber(0,120)),
+    array('selector' => '#adres_k_nr_lokalu_uc', 'method' => 'value', 'value' => $identity->randomNumber(0,120)),
+    array('selector' => '#adres_k_kod_uc', 'method' => 'value', 'value' => $identity->randomArray($database['dane_kod_pocztowy'])),
+    array('selector' => '#adres_k_poczta_uc', 'method' => 'value', 'value' => $identity->randomArray($database['dane_poczta'])),
+    array('selector' => '#adres_k_miejscowosc_uc', 'method' => 'value', 'value' => 'Warszawa'),
+    array('selector' => '#telefon_stac_dom_uc', 'method' => 'value', 'value' => '+48220000000'),
+    array('selector' => '#telefon_stac_praca_uc', 'method' => 'value', 'value' => '+48220000000'),
+    array('selector' => '#telefon_kom_uc', 'method' => 'value', 'value' => '+48781910516'),
+    array('selector' => '#email_uc', 'method' => 'value', 'value' => 'anna.zaliwska@openlife.pl'),
+    array('selector' => '#podatnik_usa_uc', 'method' => 'value', 'value' => 'N'),
+    array('selector' => '#miejsce_urodzenia_uc', 'method' => 'value', 'value' => 'Łódź'),
+    array('selector' => '#kraj_urodzenia_uc', 'method' => 'value', 'value' => 'PL'),
+    array('selector' => '#posiada_rezydencje_uc', 'method' => 'value', 'value' => 'N'),
 
-));
+    /* Dane dotyczące Ubezpieczonego */
+	array('selector' => '#imie', 'method' => 'value', 'value' => $identity2->getName()),
+	array('selector' => '#drugie_imie', 'method' => 'value', 'value' => $identity2->getSecondName()),
+	array('selector' => '#nazwisko', 'method' => 'value', 'value' => $identity2->getSurname()),
+    array('selector' => '#pesel', 'method' => 'value', 'value' => $identity2->getPesel()),
+    array('selector' => '#data_urodzenia', 'method' => 'value', 'value' => $identity2->getBirthdayDate()),
+    array('selector' => '#plec', 'method' => 'value', 'value' => $identity2->getSex()),
+    array('selector' => '#obywatelstwo', 'method' => 'value', 'value' => 'PL'),
+    array('selector' => '#rodzaj_dok_inne', 'method' => 'value', 'value' => $identity2->getIdCardType()),
+    array('selector' => '#rodzaj_dok_pol', 'method' => 'value', 'value' => $identity2->getIdCardType()),
+    array('selector' => '#nr_dok_tozsamosci', 'method' => 'value', 'value' => $identity2->getIdCardNumber()),
+    array('selector' => '#urzad_skarbowy_slownik', 'method' => 'value', 'value' => $identity2->getTaxOfficeName()),
+    array('selector' => '#nr_rachunku_ubez', 'method' => 'value', 'value' => $identity2->randomArray($database['dane_nr_rachunku_bankowego'])),
+    array('selector' => '#nazwa_banku', 'method' => 'value', 'value' => 'Getin Noble Bank S.A.'),
+    array('selector' => '#adres_z_ulica', 'method' => 'value', 'value' => $identity2->randomArray($database['dane_ulice'])),
+    array('selector' => '#adres_z_nr_domu', 'method' => 'value', 'value' => $identity2->randomNumber(0,120)),
+    array('selector' => '#adres_z_nr_lokalu', 'method' => 'value', 'value' => $identity2->randomNumber(0,120)),
+    array('selector' => '#adres_z_kod', 'method' => 'value', 'value' => $identity2->randomArray($database['dane_kod_pocztowy'])),
+    array('selector' => '#adres_z_poczta', 'method' => 'value', 'value' => $identity2->randomArray($database['dane_poczta'])),
+    array('selector' => '#adres_z_miejscowosc', 'method' => 'value', 'value' => 'Warszawa'),
+    array('selector' => '#adres_k_ulica', 'method' => 'value', 'value' => $identity2->randomArray($database['dane_ulice'])),
+    array('selector' => '#adres_k_nr_domu', 'method' => 'value', 'value' => $identity2->randomNumber(0,120)),
+    array('selector' => '#adres_k_nr_lokalu', 'method' => 'value', 'value' => $identity2->randomNumber(0,120)),
+    array('selector' => '#adres_k_kod', 'method' => 'value', 'value' => $identity2->randomArray($database['dane_kod_pocztowy'])),
+    array('selector' => '#adres_k_poczta', 'method' => 'value', 'value' => $identity2->randomArray($database['dane_poczta'])),
+    array('selector' => '#adres_k_miejscowosc', 'method' => 'value', 'value' => 'Warszawa'),
+    array('selector' => '#telefon_stac_dom', 'method' => 'value', 'value' => '+48220000000'),
+    array('selector' => '#telefon_stac_praca', 'method' => 'value', 'value' => '+48220000000'),
+    array('selector' => '#telefon_kom', 'method' => 'value', 'value' => '+48781910516'),
+    array('selector' => '#email', 'method' => 'value', 'value' => 'anna.zaliwska@openlife.pl'),
+    array('selector' => '#podatnik_usa', 'method' => 'value', 'value' => 'N'),
+    array('selector' => '#miejsce_urodzenia', 'method' => 'value', 'value' => 'Łódź'),
+    array('selector' => '#kraj_urodzenia', 'method' => 'value', 'value' => 'PL'),
+    array('selector' => '#posiada_rezydencje', 'method' => 'value', 'value' => 'N'),
+    array('selector' => '#zawod_wyk', 'method' => 'value', 'value' => 'Prawnik'),
+    array('selector' => '#dz_gosp', 'method' => 'value', 'value' => '10'),
+    array('selector' => '#zakres_ob', 'method' => 'value', 'value' => 'Prawnikowanie'),
 
-$identity = new Identity();
-	
-/*
- * WNIOSEK: PRODUKT INWESTYCYJNY
- */
-$actions->insert(array(
+    /* Ankieta medyczna dotycząca stanu zdrowia */
+    array('selector' => '#wzrost', 'method' => 'value', 'value' => $identity3->randomNumber(165,195)),
+    array('selector' => '#waga', 'method' => 'value', 'value' => $identity3->randomNumber(55,95)),
+    array('selector' => '#cisnienie_wyzsze', 'method' => 'value', 'value' => '120'),
+    array('selector' => '#cisnienie_nizsze', 'method' => 'value', 'value' => '80'),
 
-	array('selector' => '#odbiorca_imie_os_trzecia', 'method' => 'value', 'value' => $identity->getName()),
-	array('selector' => '#odbiorca_nazwisko_os_trzecia', 'method' => 'value', 'value' => $identity->getSurname()),
+    array('selector' => '#ub_ank_med_1N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#ub_ank_med_2N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#ub_ank_med_3N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#ub_ank_med_4N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#ub_ank_med_5N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#ub_ank_med_6N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#ub_ank_med_7N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#ub_ank_med_8N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#ub_ank_med_9N', 'method' => 'checked', 'value' => 'true'),
+
+    /* Dane dotyczące Ubezpieczenia */
+    array('selector' => '#skladka', 'method' => 'value', 'value' => '50000'),
+    array('selector' => '#skladka', 'method' => 'blur'),
+    array('selector' => '#skladka', 'method' => 'focus'),
+    array('selector' => '#skladka', 'method' => 'keyup'),
+    array('selector' => '#skladka', 'method' => 'change'),
+    array('selector' => '#oplata_transakcyjna', 'method' => 'blur'),
+    array('selector' => '#oplata_transakcyjna', 'method' => 'focus'),
+    array('selector' => '#oplata_transakcyjna', 'method' => 'keyup'),
+    array('selector' => '#oplata_transakcyjna', 'method' => 'change'),
+    array('selector' => '#wariant_skladkowy', 'method' => 'blur'),
+    array('selector' => '#wariant_skladkowy', 'method' => 'focus'),
+    array('selector' => '#wariant_skladkowy', 'method' => 'keyup'),
+    array('selector' => '#wariant_skladkowy', 'method' => 'change'),
+    array('selector' => '#fundusze_0_nazwa_funduszu', 'method' => 'value', 'value' => 'FOLAG002'),
+    array('selector' => '#fundusze_0_nazwa_funduszu', 'method' => 'change'),
+    array('selector' => '#fundusze_0_alokacja_text', 'method' => 'value', 'value' => '100'),
+
+    /* Umowa podstawowa */
+    array('selector' => '#ub_suma_ubezp', 'method' => 'value', 'value' => '500000'),
+    array('selector' => '#ub_suma_ubezp', 'method' => 'blur'),
+    array('selector' => '#ub_suma_ubezp', 'method' => 'keyup'),
+    array('selector' => '#ub_suma_ubezp', 'method' => 'change'),
+
+    /* Umowa dodatkowa */
+    array('selector' => '#ub_dod_nw', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#ub_dod_nw', 'method' => 'blur'),
+    array('selector' => '#ub_dod_nw', 'method' => 'keyup'),
+    array('selector' => '#ub_dod_nw', 'method' => 'change'),
+    array('selector' => '#ub_sm_nw', 'method' => 'value', 'value' => '500000'),
+    array('selector' => '#ub_sm_nw', 'method' => 'blur'),
+    array('selector' => '#ub_sm_nw', 'method' => 'keyup'),
+    array('selector' => '#ub_sm_nw', 'method' => 'change'),
+
+    array('selector' => '#ub_dod_ti', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#ub_dod_ti', 'method' => 'blur'),
+    array('selector' => '#ub_dod_ti', 'method' => 'keyup'),
+    array('selector' => '#ub_dod_ti', 'method' => 'change'),
+    array('selector' => '#ub_trw_inw', 'method' => 'value', 'value' => '250000'),
+    array('selector' => '#ub_trw_inw', 'method' => 'blur'),
+    array('selector' => '#ub_trw_inw', 'method' => 'keyup'),
+    array('selector' => '#ub_trw_inw', 'method' => 'change'),
+
+    array('selector' => '#ub_dod_ch', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#ub_dod_ch', 'method' => 'blur'),
+    array('selector' => '#ub_dod_ch', 'method' => 'keyup'),
+    array('selector' => '#ub_dod_ch', 'method' => 'change'),
+    array('selector' => '#ub_ciez_chor', 'method' => 'value', 'value' => '150000'),
+    array('selector' => '#ub_ciez_chor', 'method' => 'blur'),
+    array('selector' => '#ub_ciez_chor', 'method' => 'keyup'),
+    array('selector' => '#ub_ciez_chor', 'method' => 'change'),
+
+    array('selector' => '#ub_dod_sz', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#ub_dod_sz', 'method' => 'blur'),
+    array('selector' => '#ub_dod_sz', 'method' => 'keyup'),
+    array('selector' => '#ub_dod_sz', 'method' => 'change'),
+    array('selector' => '#ub_pob_szpital', 'method' => 'value', 'value' => '200'),
+    array('selector' => '#ub_pob_szpital', 'method' => 'blur'),
+    array('selector' => '#ub_pob_szpital', 'method' => 'keyup'),
+    array('selector' => '#ub_pob_szpital', 'method' => 'change'),
+
+    array('selector' => '#uc_pokr_agent2', 'method' => 'value', 'value' => '6'),
+
+    /* Dane uposażonych */
+    array('selector' => '#uprawnieni_0_u_typ', 'method' => 'value', 'value' => '1'),
+    array('selector' => '#uprawnieni_0_u_typ', 'method' => 'change'),
+    array('selector' => '#uprawnieni_1_u_typ', 'method' => 'value', 'value' => '2'),
+    array('selector' => '#uprawnieni_1_u_typ', 'method' => 'change'),
+    array('selector' => '#uprawnieni_0_u_imie', 'method' => 'value', 'value' => $identity3->getName()),
+    array('selector' => '#uprawnieni_0_u_drugie_imie', 'method' => 'value', 'value' => $identity3->getSecondName()),
+    array('selector' => '#uprawnieni_0_u_nazwisko', 'method' => 'value', 'value' => $identity3->getSurname()),
+    array('selector' => '#uprawnieni_0_u_pesel', 'method' => 'value', 'value' => $identity3->getPesel()),
+    array('selector' => '#uprawnieni_0_u_plec', 'method' => 'value', 'value' => $identity3->getSex()),
+    array('selector' => '#uprawnieni_0_u_data_urodzenia', 'method' => 'value', 'value' => $identity3->getBirthdayDate()),
+    array('selector' => '#uprawnieni_0_u_pokrewienstwo', 'method' => 'value', 'value' => $identity3->randomArray($database['dane_pokrewienstwa'])),
+    array('selector' => '#uprawnieni_0_u_procent', 'method' => 'value', 'value' => $procentage),
+    
+    array('selector' => '#uprawnieni_1_u_regon', 'method' => 'value', 'value' => '237987346'),
+    array('selector' => '#uprawnieni_1_u_nazwa', 'method' => 'value', 'value' => $identity3->randomArray($database['dane_nazwy'])),
+    array('selector' => '#uprawnieni_1_u_procent', 'method' => 'value', 'value' => 100-$procentage),
+
+    array('selector' => '#uprawnieni_0_typ', 'method' => 'value', 'value' => '1'),
+    array('selector' => '#uprawnieni_0_typ', 'method' => 'change'),
+    array('selector' => '#uprawnieni_1_typ', 'method' => 'value', 'value' => '2'),
+    array('selector' => '#uprawnieni_1_typ', 'method' => 'change'),
+    array('selector' => '#uprawnieni_0_imie', 'method' => 'value', 'value' => $identity3->getName()),
+    array('selector' => '#uprawnieni_0_drugie_imie', 'method' => 'value', 'value' => $identity3->getSecondName()),
+    array('selector' => '#uprawnieni_0_nazwisko', 'method' => 'value', 'value' => $identity3->getSurname()),
+    array('selector' => '#uprawnieni_0_pesel', 'method' => 'value', 'value' => $identity3->getPesel()),
+    array('selector' => '#uprawnieni_0_plec', 'method' => 'value', 'value' => $identity3->getSex()),
+    array('selector' => '#uprawnieni_0_data_urodzenia', 'method' => 'value', 'value' => $identity3->getBirthdayDate()),
+    array('selector' => '#uprawnieni_0_pokrewienstwo', 'method' => 'value', 'value' => $identity3->randomArray($database['dane_pokrewienstwa'])),
+    array('selector' => '#uprawnieni_0_procent', 'method' => 'value', 'value' => $procentage),
+    
+    array('selector' => '#uprawnieni_1_regon', 'method' => 'value', 'value' => '237987346'),
+    array('selector' => '#uprawnieni_1_nazwa', 'method' => 'value', 'value' => $identity3->randomArray($database['dane_nazwy'])),
+    array('selector' => '#uprawnieni_1_procent', 'method' => 'value', 'value' => 100-$procentage),
+
+    /* AML */
+    array('selector' => '#wlasciciel_srodkow', 'method' => 'value', 'value' => 'T'),
+    array('selector' => '#wlasciciel_srodkow', 'method' => 'change'),
+    array('selector' => '#srodki_finansowe_pochodzenie', 'method' => 'value', 'value' => '1'),
+    array('selector' => '#srodki_finansowe_pochodzenie', 'method' => 'change'),
+    array('selector' => '#stanowisko_polityczne', 'method' => 'value', 'value' => 'N'),
+    array('selector' => '#stanowisko_polityczne', 'method' => 'change'),
+
+    /* Oświadczenia Ubezpieczającego */
+    array('selector' => '#indeksacja_tak_uc', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#oferty_handlowe_tak_uc', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#przekazywanie_informacji_tak_uc', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#przetwarzanie_danych_tak_uc', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#marketing_bezposredni_tak_uc', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#oferty_handlowe_tak', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#przekazywanie_informacji_tak', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#przekazanie_wersji_papierowej', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#przetwarzanie_danych_tak', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#marketing_bezposredni_tak', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#kontroferta_nie_uc', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#przetwarzanie_stan_zdrowia_a_tak', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#przetwarzanie_stan_zdrowia_b_tak', 'method' => 'checked', 'value' => 'true'),
+
+    /* Kwestionariusz Medyczny */
+    array('selector' => '#km_0_N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#km_1_N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#km_2_N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#km_3_N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#km_4_N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#km_5_N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#km_6_N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#km_6A_N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#km_6B_N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#km_6C_N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#km_6D_N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#km_6E_N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#km_6F_N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#km_6G_N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#km_6H_N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#km_6I_N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#km_6J_N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#km_6K_N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#km_6L_N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#km_6M_N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#km_7_N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#km_8_N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#km_9_N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#km_10_N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#km_11_N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#km_12_N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#km_13_N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#km_14_N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#km_15_N', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#km_16_N', 'method' => 'checked', 'value' => 'true'),
+
+	array('selector' => '#odbiorca_imie_os_trzecia', 'method' => 'value', 'value' => $identity4->getName()),
+	array('selector' => '#odbiorca_nazwisko_os_trzecia', 'method' => 'value', 'value' => $identity4->getSurname()),
     array('selector' => '#adres_ulica_os_trzecia', 'method' => 'value', 'value' => "Ulica"),
     array('selector' => '#adres_nr_domu_os_trzecia', 'method' => 'value', 'value' => "1"),
     array('selector' => '#adres_nr_lokalu_os_trzecia', 'method' => 'value', 'value' => "1"),
-    array('selector' => '#adres_miejscowosc_os_trzecia', 'method' => 'value', 'value' => "Miejscowość"),
+    array('selector' => '#zawod_wyk', 'method' => 'value', 'value' => "Miejscowość"),
     array('selector' => '#adres_kod_os_trzecia', 'method' => 'value', 'value' => "11-111"),
     array('selector' => '#adres_poczta_os_trzecia', 'method' => 'value', 'value' => "Poczta"),
     array('selector' => '#adres_kraj_os_trzecia', 'method' => 'value', 'value' => "PL"),
@@ -686,20 +960,59 @@ $actions->insert(array(
     array('selector' => '#adres_k_kod_os_trzecia', 'method' => 'value', 'value' => "11-111"),
     array('selector' => '#adres_k_poczta_os_trzecia', 'method' => 'value', 'value' => "Poczta"),
     array('selector' => '#adres_k_kraj_os_trzecia', 'method' => 'value', 'value' => "PL"),
-    array('selector' => '#nr_rachunku_os_trzecia', 'method' => 'value', 'value' => "26249000056450941321968339")
+    array('selector' => '#nr_rachunku_os_trzecia', 'method' => 'value', 'value' => "26249000056450941321968339"),
 
+    array('selector' => '#protectiveType1', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#samePerson1', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#zgoda_ankieta_wypelnia_tak', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#przekazywanie_danych_tak', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#dostep_internet_tak', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#q2_a3', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#q3_a3', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#q4_a6', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#q5_a5', 'method' => 'checked', 'value' => 'true'),
+    
+    array('selector' => '#q10_a1', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#q11_a5', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#q12_a1', 'method' => 'value', 'value' => $identity->randomNumber(3,6,2)),
+    array('selector' => '#q13_a1_tak', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#q13_a2_tak', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#q14_a5', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#q7_a4', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#q8_a1_nie', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#q8_a2_nie', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#q8_a3_tak', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#q8_a4_tak', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#q8_a5_tak', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#q8_a6_tak', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#q9_a1_tak', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#q9_a2_tak_elem_nie', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#q9_a3_tak_elem_nie', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#q9_a4_tak_elem_tak', 'method' => 'checked', 'value' => 'true'),
+    array('selector' => '#q13_a2_tak', 'method' => 'checked', 'value' => 'true'),
+
+
+
+    array('selector' => '#insurerPesel', 'method' => 'value', 'value' => $identity3->getPesel()),
+    array('selector' => '#insuredPesel', 'method' => 'value', 'value' => $identity3->getPesel()),
+    array('selector' => '#dokument_tozsamosci_rodzaj', 'method' => 'value', 'value' => $identity2->getIdCardType()),
+    array('selector' => '#dokument_tozsamosci_numer', 'method' => 'value', 'value' => $identity2->getIdCardNumber())
 
 ));
+
+$cookies = getCookies('branxe_next_stage');
+
+if($cookies!='ok') {
+    $actions->insert(array(
+        array('selector' => '#l_uprawnionych', 'method' => 'value', 'value' => '2'),
+        array('selector' => '#l_uprawnionych', 'method' => 'change'),
+        array('selector' => '#l_funduszy', 'method' => 'value', 'value' => '1'),
+        array('selector' => '#l_funduszy', 'method' => 'change')
+    ));
+}
+
+setCookies('branxe_next_stage', 'ok', 3);
 
 $actions->renderScript();
 
 ?>
-
-document.body.onkeyup = function(e){
-    if(e.keyCode == 32){
-        $("#button_next").click();
-        $("#finish").click();
-        $("#s3").click();
-        $("#s2").click();
-    }
-}
