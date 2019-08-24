@@ -1,2 +1,2 @@
 ## Branxe
-Branxe jest oprogramowaniem służącym do usprawniania testów manualnych aplikacji
+Branxe jest oprogramowaniem służącym do generowania losowych danych
