@@ -1,7 +1,7 @@
 {
     "name": "pszewczyk/branxe",
     "type": "library",
-    "description": "",
+    "description": "Branxe is a library to generating a random/fake data.",
     "keywords": ["branxe","data"],
     "license": "MIT",
     "authors": [
