@@ -1,0 +1,19 @@
+{
+    "name": "pszewczyk/branxe",
+    "type": "library",
+    "description": "",
+    "keywords": ["branxe","data"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Piotr Szewczyk",
+            "email": "piotr.szewczyk96@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^5.3.3 || ^7.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.8.35 || ^5.7"
+    }
+}
