@@ -2,6 +2,8 @@
 
 namespace Branxe\Action;
 
+use Branxe\Builder\Grammar;
+
 class ElementAction extends Action
 {
     /**
@@ -23,7 +25,7 @@ class ElementAction extends Action
      */
     public function click()
     {
-        array_push($this->code, '.click()');
+        array_push($this->code, Grammar::click());
         return $this;
     }
 }

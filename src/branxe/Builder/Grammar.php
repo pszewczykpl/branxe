@@ -2,10 +2,15 @@
 
 namespace Branxe\Builder;
 
-class Grammar
-{
-    public function click()
-    {
+use Branxe\Builder\GrammarInterfaces\{Elements, Conditions};
 
+class Grammar implements Elements, Conditions
+{
+    /**
+     * @return string
+     */
+    public static function click(): string
+    {
+        return '.click()';
     }
 }
