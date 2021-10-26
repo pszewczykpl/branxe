@@ -1,8 +1,8 @@
 {
-    "name": "pszewczyk/branxe",
+    "name": "pszewczykpl/branxe",
     "type": "library",
-    "description": "Branxe is a library to generating a random/fake data.",
-    "keywords": ["branxe","data"],
+    "description": "Branxe is a framework to generating a jQuery scripts.",
+    "keywords": ["branxe"],
     "license": "MIT",
     "authors": [
         {
@@ -11,9 +11,14 @@
         }
     ],
     "require": {
-        "php": "^5.3.3 || ^7.0"
+        "php": "^8.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^4.8.35 || ^5.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "Branxe\\": "src/Branxe"
+        }
     }
 }
