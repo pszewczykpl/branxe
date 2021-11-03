@@ -2,7 +2,7 @@
 
 namespace Branxe\Script;
 
-use Branxe\Builder\Builder;
+use Branxe\Grammar\Builder;
 use Branxe\Collection\ActionCollection;
 
 class Script

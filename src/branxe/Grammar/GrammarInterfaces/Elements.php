@@ -1,6 +1,6 @@
 <?php
 
-namespace Branxe\Builder\GrammarInterfaces;
+namespace Branxe\Grammar\GrammarInterfaces;
 
 interface Elements
 {

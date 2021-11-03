@@ -2,7 +2,7 @@
 
 namespace Branxe\Action;
 
-use Branxe\Builder\Grammar;
+use Branxe\Grammar\Grammar;
 
 class ElementAction extends Action
 {
