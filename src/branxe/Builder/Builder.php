@@ -26,7 +26,7 @@ class Builder
     public function render()
     {
         foreach($this->collection->getAll() as $item) {
-            echo $item->renderAction();
+            echo $item->renderAction() . "\n";
         }
     }
 

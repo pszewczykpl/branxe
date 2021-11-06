@@ -11,22 +11,15 @@ class Element extends BuilderExt
 {
     public function click()
     {
-        $action = $this->collection->getLast();
-        $action->insert(E::click());
+        $this->addToLastAction(E::click());
         return $this;
     }
 
     public function on($arg, $callback)
     {
-        $action = $this->collection->getLast();
-        $action->insert(".on(\"$arg\", function() { ");
-        $action->withoutSemicolon();
-
+        $this->addToLastAction(".on(\"$arg\", function() { ")->withoutSemicolon();
         $callback(new Driver($this->collection));
-
-        $action2 = new Action();
-        $action2->insert(' }');
-        $this->collection->insert($action2);
+        $this->addAction(' }');
 
         return $this;
     }
