@@ -14,6 +14,11 @@ abstract class Action
      */
     private string $semicolon = ';';
 
+    public function insert($code)
+    {
+        array_push($this->code, $code);
+    }
+
     /**
      * @return string
      */
@@ -25,10 +30,8 @@ abstract class Action
     /**
      * @return $this
      */
-    public function withoutSemicolon(): static
+    public function withoutSemicolon()
     {
         $this->semicolon = '';
-
-        return $this;
     }
 }

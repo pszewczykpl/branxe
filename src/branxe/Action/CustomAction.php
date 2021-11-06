@@ -7,9 +7,9 @@ class CustomAction extends Action
     /**
      * @param $customCode
      */
-    public function __construct($customCode)
+    public function __construct($code)
     {
-        parent::withoutSemicolon();
-        array_push($this->code, $customCode);
+        $this->withoutSemicolon();
+        $this->insert($code);
     }
 }

@@ -4,11 +4,12 @@ namespace Branxe\Builder;
 
 use Branxe\Action\{CustomAction, ElementAction};
 use Branxe\Collection\ActionCollection;
+use Branxe\Grammar\Grammar;
 
 class Builder
 {
     private ActionCollection $collection;
-    protected Grammar $grammar;
+    private Driver $driver;
 
     /**
      * @param $collection
@@ -16,30 +17,32 @@ class Builder
     public function __construct($collection)
     {
         $this->collection = $collection;
-        $this->grammar = new Grammar();
+        $this->driver = new Driver($this->collection);
     }
 
     /**
-     * @param string $id
-     * @return ElementAction
+     *
      */
-    public function find_element_by_id(string $id): ElementAction
+    public function render()
     {
-        $element = new ElementAction('$("#' . $id . '")');
-        $this->collection->insert($element);
-        return $element;
+        foreach($this->collection->get() as $item) {
+            echo $item->renderAction();
+        }
     }
 
     /**
-     * @param $if
+     * @return Builder
+     */
+    public function insert()
+    {
+        return $this->driver;
+    }
+
+    /**
      * @param $callback
-     * @return $this
      */
-    public function if($if, $callback)
+    public function insertMany($callback)
     {
-        $this->collection->insert(new CustomAction('if(' . $if . ') {'));
-        $callback($this);
-        $this->collection->insert(new CustomAction('}'));
-        return $this;
+        $callback($this->driver);
     }
 }
