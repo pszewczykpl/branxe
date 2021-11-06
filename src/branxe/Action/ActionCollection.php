@@ -1,28 +1,23 @@
 <?php
 
-namespace Branxe\Collection;
+namespace Branxe\Action;
 
 use Branxe\Action\Action;
 
 class ActionCollection
 {
-    /**
-     * @var array
-     */
-    private array $collection = array();
+    private array $collection = [];
 
-    /**
-     * @return array
-     */
-    public function get(): array
+    public function getAll(): array
     {
         return $this->collection;
     }
 
-    /**
-     * @param Action $action
-     * @return $this
-     */
+    public function getLast()
+    {
+        return $this->collection[count($this->collection)-1];
+    }
+
     public function insert(Action $action): static
     {
         array_push($this->collection, $action);

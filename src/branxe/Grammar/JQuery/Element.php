@@ -4,7 +4,7 @@ namespace Branxe\Grammar\JQuery;
 
 use Branxe\Grammar\GrammarInterfaces\Elements as IElements;
 
-class Elements implements IElements
+class Element implements IElements
 {
     /**
      * @return string
@@ -14,8 +14,8 @@ class Elements implements IElements
         return '.click()';
     }
 
-    public static function selector($selector): string
+    public static function findElementById($selector): string
     {
-        return "$(\"$selector\")";
+        return "$(\"#$selector\")";
     }
 }

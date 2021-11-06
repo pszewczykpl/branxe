@@ -3,7 +3,7 @@
 namespace Branxe;
 
 use Branxe\Builder\Builder;
-use Branxe\Collection\ActionCollection;
+use Branxe\Action\ActionCollection;
 
 class Script
 {
