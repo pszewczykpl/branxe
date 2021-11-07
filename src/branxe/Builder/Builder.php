@@ -10,21 +10,19 @@ use stdClass;
 
 class Builder
 {
-    private ActionCollection $collection;
-    private Driver $driver;
+    protected ActionCollection $collection;
 
-    /**
-     * @param $collection
-     */
     public function __construct($collection = null)
     {
         $collection = new ActionCollection();
         $this->collection = $collection;
     }
 
-    /**
-     *
-     */
+    public function getCollection()
+    {
+        return $this->collection;
+    }
+
     public function render()
     {
         foreach($this->collection->getAll() as $item) {
@@ -32,11 +30,8 @@ class Builder
         }
     }
 
-    /**
-     * @param $callback
-     */
     public function insert($callback)
     {
-        $callback(new Driver($this->collection));
+        $callback(new Driver($this));
     }
 }

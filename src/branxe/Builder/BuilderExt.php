@@ -2,22 +2,21 @@
 
 namespace Branxe\Builder;
 
-use Branxe\Action\ActionCollection;
 use Branxe\Action\Action;
 
 class BuilderExt
 {
-    protected ActionCollection $collection;
+    protected Builder $builder;
 
-    public function __construct($collection)
+    public function __construct($builder)
     {
-        $this->collection = $collection;
+        $this->builder = $builder;
     }
 
     protected function addAction($body)
     {
         $action = new Action();
-        $this->collection->insert($action);
+        $this->builder->getCollection()->insert($action);
         $action->insert($body);
 
         return $action;
@@ -25,7 +24,7 @@ class BuilderExt
 
     protected function extendAction($body)
     {
-        $action = $this->collection->getLast();
+        $action = $this->builder->getCollection()->getLast();
         $action->insert($body);
 
         return $action;

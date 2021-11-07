@@ -14,22 +14,22 @@ class Element extends BuilderExt
         return $this;
     }
 
-    public function css($body)
+    public function css(...$body)
     {
-        $this->extendAction(".css(\"$body\")");
+        $this->extendAction(E::css(...$body));
         return $this;
     }
 
-    public function add($body)
+    public function blur()
     {
-        $this->extendAction(".add(\"$body\")");
+        $this->extendAction(E::blur());
         return $this;
     }
 
     public function on($arg, $callback)
     {
         $this->extendAction(".on(\"$arg\", function() { ")->withoutSemicolon();
-        $callback(new Driver($this->collection));
+        $callback(new Driver($this->builder));
         $this->addAction(' }');
 
         return $this;
