@@ -6,16 +6,18 @@ use Branxe\Grammar\GrammarInterfaces\Elements as IElements;
 
 class Element implements IElements
 {
-    /**
-     * @return string
-     */
     public static function click(): string
     {
         return '.click()';
     }
 
-    public static function findElementById($selector): string
+    public static function blur(): string
     {
-        return "$(\"#$selector\")";
+        return '.blur()';
+    }
+
+    public static function css(...$body): string
+    {
+        return '.css("' . implode('", "', ( is_array($body[0]) ? $body[0] : $body) ) . '")';
     }
 }
