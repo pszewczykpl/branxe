@@ -6,6 +6,8 @@ use Branxe\Grammar\JQuery\Element as E;
 
 $script = Branxe\Script::create();
 $script->insert(function ($driver) {
-    $driver->findElementById('id_1')->add('dupa')->css('jebać');
+    $driver->findElementByName('123')->css('1', '2', 3.3);
+    $driver->findElementById('123')->click();
+    $driver->findElementById('123')->blur();
 });
 $script->render();
