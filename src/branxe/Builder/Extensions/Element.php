@@ -26,6 +26,12 @@ class Element extends BuilderExt
         return $this;
     }
 
+    public function change()
+    {
+        $this->extendAction(E::change());
+        return $this;
+    }
+
     public function on($arg, $callback)
     {
         $this->extendAction(".on(\"$arg\", function() { ")->withoutSemicolon();

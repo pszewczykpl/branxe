@@ -20,4 +20,9 @@ class Element implements IElements
     {
         return '.css("' . implode('", "', ( is_array($body[0]) ? $body[0] : $body) ) . '")';
     }
+
+    public static function change(): string
+    {
+        return '.change()';
+    }
 }
