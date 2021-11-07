@@ -23,7 +23,7 @@ class BuilderExt
         return $action;
     }
 
-    protected function addToLastAction($body)
+    protected function extendAction($body)
     {
         $action = $this->collection->getLast();
         $action->insert($body);

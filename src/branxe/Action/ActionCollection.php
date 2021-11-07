@@ -18,10 +18,14 @@ class ActionCollection
         return $this->collection[count($this->collection)-1];
     }
 
+    public function getFirst()
+    {
+        return $this->collection[0];
+    }
+
     public function insert(Action $action): static
     {
-        array_push($this->collection, $action);
-
+        $this->collection[] = $action;
         return $this;
     }
 }

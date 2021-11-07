@@ -6,6 +6,7 @@ use Branxe\Action\{CustomAction, ElementAction};
 use Branxe\Action\ActionCollection;
 use Branxe\Grammar\Grammar;
 use Branxe\Builder\Extensions\Driver;
+use stdClass;
 
 class Builder
 {
@@ -15,8 +16,9 @@ class Builder
     /**
      * @param $collection
      */
-    public function __construct($collection)
+    public function __construct($collection = null)
     {
+        $collection = new ActionCollection();
         $this->collection = $collection;
     }
 
@@ -26,7 +28,7 @@ class Builder
     public function render()
     {
         foreach($this->collection->getAll() as $item) {
-            echo $item->renderAction() . "\n";
+            echo $item->renderAction();
         }
     }
 
