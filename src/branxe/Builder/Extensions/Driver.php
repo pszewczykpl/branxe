@@ -3,7 +3,7 @@
 namespace Branxe\Builder\Extensions;
 
 use Branxe\Action\Action;
-use Branxe\Grammar\JQuery\Finder as F;
+use Branxe\Grammar\JQuery\{Finder as F, Alert as A};
 use Branxe\Builder\BuilderExt;
 
 class Driver extends BuilderExt
@@ -30,6 +30,20 @@ class Driver extends BuilderExt
     {
         $this->addAction(F::findElement($selector));
         return new Element($this->builder);
+    }
+
+    public function custom(string $code)
+    {
+        $this->addAction($code);
+
+        return $this;
+    }
+
+    public function alert(string $msg)
+    {
+        $this->addAction(A::alert($msg));
+
+        return $this;
     }
 
     public function if($if, $callback)
