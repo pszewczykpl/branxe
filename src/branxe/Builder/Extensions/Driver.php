@@ -3,7 +3,7 @@
 namespace Branxe\Builder\Extensions;
 
 use Branxe\Action\Action;
-use Branxe\Grammar\JQuery\{Finder as F, Alert as A};
+use Branxe\Grammar\{Finder as F, Alert as A};
 use Branxe\Builder\BuilderExt;
 
 class Driver extends BuilderExt

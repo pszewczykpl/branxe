@@ -2,7 +2,7 @@
 
 namespace Branxe\Builder\Extensions;
 
-use Branxe\Grammar\JQuery\Element as E;
+use Branxe\Grammar\Element as E;
 use Branxe\Builder\BuilderExt;
 use Branxe\Builder\Extensions\Driver;
 

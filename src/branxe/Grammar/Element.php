@@ -1,6 +1,6 @@
 <?php
 
-namespace Branxe\Grammar\JQuery;
+namespace Branxe\Grammar;
 
 use Branxe\Grammar\GrammarInterfaces\Elements as IElements;
 
