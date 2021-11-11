@@ -25,4 +25,14 @@ class Element implements IElements
     {
         return '.change()';
     }
+
+    public static function value($value): string
+    {
+        return '.val("' . $value . '")';
+    }
+
+    public static function append($append): string
+    {
+        return ".append($append)";
+    }
 }

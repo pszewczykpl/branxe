@@ -32,6 +32,18 @@ class Element extends BuilderExt
         return $this;
     }
 
+    public function value(string $value = '')
+    {
+        $this->extendAction(E::value($value));
+        return $this;
+    }
+
+    public function append(string $append = '')
+    {
+        $this->extendAction(E::append($append));
+        return $this;
+    }
+
     public function on($arg, $callback)
     {
         $this->extendAction(".on(\"$arg\", function() { ")->withoutSemicolon();
