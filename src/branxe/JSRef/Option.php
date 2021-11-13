@@ -1,6 +1,6 @@
 <?php
 
-namespace Branxe\Grammar;
+namespace Branxe\JSRef;
 
 class Option
 {

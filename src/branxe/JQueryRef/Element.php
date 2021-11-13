@@ -1,10 +1,8 @@
 <?php
 
-namespace Branxe\Grammar;
+namespace Branxe\JQueryRef;
 
-use Branxe\Grammar\GrammarInterfaces\Elements as IElements;
-
-class Element implements IElements
+class Element
 {
     public static function click(): string
     {
@@ -14,6 +12,11 @@ class Element implements IElements
     public static function blur(): string
     {
         return '.blur()';
+    }
+
+    public static function keyup(): string
+    {
+        return '.keyup()';
     }
 
     public static function css(...$body): string
@@ -26,7 +29,7 @@ class Element implements IElements
         return '.change()';
     }
 
-    public static function value($value): string
+    public static function val($value): string
     {
         return '.val("' . $value . '")';
     }

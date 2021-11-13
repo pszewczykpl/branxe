@@ -1,6 +1,6 @@
 <?php
 
-namespace Branxe\Grammar\GrammarInterfaces;
+namespace Branxe\JSRef\Interfaces;
 
 interface Conditions
 {

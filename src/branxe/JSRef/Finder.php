@@ -1,8 +1,8 @@
 <?php
 
-namespace Branxe\Grammar;
+namespace Branxe\JSRef;
 
-use Branxe\Grammar\GrammarInterfaces\Finders as IFinders;
+use Branxe\JSRef\Interfaces\Finders as IFinders;
 
 class Finder implements IFinders
 {

@@ -2,7 +2,7 @@
 
 namespace Branxe\Builder\Extensions;
 
-use Branxe\Grammar\Element as E;
+use Branxe\JQueryRef\Element as E;
 use Branxe\Builder\BuilderExt;
 use Branxe\Builder\Extensions\Driver;
 
@@ -34,7 +34,7 @@ class Element extends BuilderExt
 
     public function value(string $value = '')
     {
-        $this->extendAction(E::value($value));
+        $this->extendAction(E::val($value));
         return $this;
     }
 

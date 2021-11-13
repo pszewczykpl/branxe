@@ -2,7 +2,7 @@
 
 require_once __DIR__.'/../vendor/autoload.php';
 
-use Branxe\Grammar\Option;
+use Branxe\JSRef\Option;
 
 $script = Branxe\Script::create();
 $script->conditions()->urlContains('formFill');

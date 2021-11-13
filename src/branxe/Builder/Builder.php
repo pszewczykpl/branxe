@@ -4,7 +4,6 @@ namespace Branxe\Builder;
 
 use Branxe\Action\ActionCollection;
 use Branxe\Builder\Extensions\Driver;
-use stdClass;
 
 class Builder
 {
