@@ -2,9 +2,8 @@
 
 namespace Branxe\Builder\Extensions;
 
-use Branxe\Action\Action;
-use Branxe\JSRef\{Finder as F, Alert as A, Document as D};
 use Branxe\JQueryRef\{JQuery, Selector as By};
+use Branxe\JSRef\{Document, Finder};
 use Branxe\Builder\BuilderExt;
 
 class Driver extends BuilderExt
@@ -17,7 +16,8 @@ class Driver extends BuilderExt
      */
     public function findElementById(string $selector): Element
     {
-        $this->addAction(JQuery::find(By::id($selector)));
+//        $this->addAction(JQuery::find(By::id($selector)));
+        $this->addAction(Document::getElementById($selector));
         return new Element($this->builder);
     }
 
@@ -55,28 +55,5 @@ class Driver extends BuilderExt
     {
         $this->addAction(JQuery::find(By::custom($selector)));
         return new Element($this->builder);
-    }
-
-    public function exec(string $code)
-    {
-        $this->addAction($code);
-
-        return $this;
-    }
-
-    public function alert(string $msg)
-    {
-        $this->addAction(A::alert($msg));
-
-        return $this;
-    }
-
-    public function if($if, $callback)
-    {
-        $this->addAction('if(' . $if . ') { ')->withoutSemicolon();
-        $callback($this);
-        $this->addAction(' }');
-
-        return $this;
     }
 }

@@ -2,17 +2,22 @@
 
 namespace Branxe\Builder\Extensions;
 
-use Branxe\JQueryRef\Element as E;
+use Branxe\JSRef\Element as E;
 use Branxe\Builder\BuilderExt;
-use Branxe\Builder\Extensions\Driver;
 
 class Element extends BuilderExt
 {
-    public function click()
+    public function click(): Element
     {
         $this->extendAction(E::click());
         return $this;
     }
+
+//    public function click(): Element
+//    {
+//        $this->extendAction('.dispatchEvent(new Event("change"))');
+//        return $this;
+//    }
 
     public function css(...$body)
     {
@@ -20,11 +25,17 @@ class Element extends BuilderExt
         return $this;
     }
 
-    public function blur()
+    public function focus()
     {
-        $this->extendAction(E::blur());
-        return $this;
+        $this->extendAction('.focus()');
+        return $this->builder;
     }
+
+//    public function blur()
+//    {
+//        $this->extendAction(E::blur());
+//        return $this->builder;
+//    }
 
     public function change()
     {
@@ -34,7 +45,7 @@ class Element extends BuilderExt
 
     public function value(string $value = '')
     {
-        $this->extendAction(E::val($value));
+        $this->extendAction('.value = "' . $value . '"');
         return $this;
     }
 

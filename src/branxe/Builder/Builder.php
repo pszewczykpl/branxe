@@ -22,7 +22,7 @@ class Builder
         return $this->collection;
     }
 
-    public function conditions()
+    public function url()
     {
         return new class($this) {
 
@@ -33,17 +33,15 @@ class Builder
                 $this->builder = $builder;
             }
 
-            public function urlContains($url)
+            public function contains($url)
             {
-                $this->builder->conditions[] = 'window.location.href.includes("' . $url . '")';
-
+                $this->builder->conditions[] = "window.location.href.includes(\"$url\")";
                 return $this;
             }
 
-            public function urlEqual($url)
+            public function equal($url)
             {
-                $this->builder->conditions[] = 'window.location.href == "' . $url . '"';
-
+                $this->builder->conditions[] = "window.location.href == \"$url\"";
                 return $this;
             }
         };
